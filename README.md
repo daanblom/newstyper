@@ -1,5 +1,5 @@
 # NewsTyper
-
+![header](./docs/Header.png)
 A modern web application that combines touch typing practice with news reading. Practice your typing skills while staying informed with the latest news articles.
 
 ## Features
