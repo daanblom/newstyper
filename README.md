@@ -34,7 +34,7 @@ A modern web application that combines touch typing practice with news reading. 
 
 1. Clone the repository:
    ```bash
-   git clone [repository-url]
+   git clone https://github.com/daanblom/newstyper
    cd newstyper
    ```
 
