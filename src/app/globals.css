@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'db-pixel';
+  src: url('/fonts/db-pixel.ttf') format('truetype');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,6 +16,7 @@
   --current-color: 0, 0, 0;
   --upcoming-color: 150, 150, 150;
   --cursor-color: 0, 0, 0;
+  --button-color: 100, 100, 100;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,13 +29,14 @@
     --current-color: 255, 255, 255;
     --upcoming-color: 100, 100, 100;
     --cursor-color: 255, 255, 255;
+    --button-color: 200, 200, 200;
   }
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
-  font-family: 'Roboto Mono', monospace;
+  font-family: 'db-pixel', 'Roboto Mono', monospace;
 }
 
 .typing-container {
@@ -43,6 +50,15 @@ body {
   line-height: 1.75;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.article-source, .article-counter {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.article-title {
+  font-family: 'db-pixel', monospace;
 }
 
 .typing-char {
@@ -84,4 +100,21 @@ body {
 
 .animate-blink {
   animation: blink 1s step-end infinite;
+}
+
+.custom-button {
+  background-color: transparent;
+  border: 1px solid rgb(var(--button-color));
+  color: rgb(var(--button-color));
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-family: 'db-pixel', monospace;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.custom-button:hover {
+  background-color: rgba(var(--button-color), 0.1);
+  color: rgb(var(--foreground-rgb));
+  border-color: rgb(var(--foreground-rgb));
 }

@@ -191,8 +191,8 @@ export default function TypeWriter({ article }: TypeWriterProps) {
   return (
     <div>
       <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold mb-2">{article.title}</h1>
-        <p className="text-gray-600">Source: {article.source}</p>
+        <h1 className="text-2xl font-bold mb-2 article-title">{article.title}</h1>
+        <p className="text-gray-600 article-source">Source: {article.source}</p>
       </div>
 
       {renderArticleText()}
@@ -211,7 +211,7 @@ export default function TypeWriter({ article }: TypeWriterProps) {
         
         <button
           onClick={resetTyping}
-          className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+          className="custom-button"
         >
           {isComplete ? "Try Again" : "Reset"}
         </button>
