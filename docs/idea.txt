@@ -1,0 +1,19 @@
+# Practice typing inside the webbrowser, while getting up to date on the news at the same time. 
+
+the idea of the website is, that you can Practice your typing skills, while also getting up to date on the news. the website will aways just display one of the articles, which should be max 1 alinea long. 
+
+## Components 
+
+It should probably consist of at least these elements. make sure they are properly separated so we can easily work on different parts of the system. The server side section is what we will be working on last, before that i want the manual approach to be fully working.
+
+### Frontend
+ - webpage that fetches an article from the database, 
+ - use tailwindcss
+
+### Backend 
+ - some sort of database to save articles in. we will have to create an automated way to do this, but might want to start off with the option to do it manually to have a better controlled environment. 
+
+### Server side 
+ - fetch news articles
+ - transform to appropriate format for touch typing using ai. (while keeping information like the orginal title, url).
+ - save data in some sort of database
