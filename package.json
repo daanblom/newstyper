@@ -6,10 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:start": "pg_ctl -D .postgres/data -l .postgres/logfile start",
+    "db:stop": "pg_ctl -D .postgres/data stop",
+    "db:status": "pg_ctl -D .postgres/data status",
+    "prisma:studio": "prisma studio",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "NODE_OPTIONS='--loader ts-node/esm' node prisma/scripts/seed.ts"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "next": "15.2.4",
+    "prisma": "^6.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -23,6 +31,7 @@
     "eslint-config-next": "15.2.4",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
