@@ -38,6 +38,11 @@ const sampleArticles = [
 async function main() {
   console.log('Start seeding...');
   
+  // Clear existing data
+  console.log('Clearing existing articles...');
+  await prisma.article.deleteMany();
+  
+  // Insert new articles
   for (const article of sampleArticles) {
     const result = await prisma.article.create({
       data: article,

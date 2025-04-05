@@ -51,6 +51,9 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   font-family: Georgia, 'Times New Roman', serif;
+  word-break: keep-all;
+  hyphens: none;
+  overflow-wrap: break-word;
 }
 
 .article-source, .article-counter {

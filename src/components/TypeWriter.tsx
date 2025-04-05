@@ -6,6 +6,7 @@ interface Article {
   title: string;
   content: string;
   source: string;
+  difficulty: number;
 }
 
 interface TypeWriterProps {
@@ -25,9 +26,12 @@ export default function TypeWriter({ article }: TypeWriterProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const currentCharRef = useRef<HTMLSpanElement>(null);
 
-  // Split article content into paragraphs and then characters
+  // Split article content into paragraphs, then words, then characters
   const paragraphs = article.content.split(/\n+/).filter(p => p.trim().length > 0);
   const text = paragraphs.join('\n\n');
+  
+  // First split into words (preserving spaces), then into characters
+  const words = text.split(/(\s+)/); // This preserves whitespace as separate elements
   const chars = text.split('');
 
   // Initialize completed characters array
@@ -147,34 +151,41 @@ export default function TypeWriter({ article }: TypeWriterProps) {
       >
         {paragraphs.map((paragraph, pIndex) => (
           <p key={pIndex} className="mb-4 whitespace-pre-wrap">
-            {paragraph.split('').map((char, cIndex) => {
-              const globalIndex = pIndex === 0 
-                ? cIndex 
-                : paragraphs.slice(0, pIndex).join('').length + cIndex + (pIndex * 2); // +2 for newlines
-              
-              let className = "typing-char ";
-              
-              if (globalIndex < currentCharIndex) {
-                // Completed characters
-                className += completedChars[globalIndex] ? "correct" : "incorrect";
-              } else if (globalIndex === currentCharIndex) {
-                // Current character
-                className += "current";
-              } else {
-                // Upcoming characters
-                className += "upcoming";
-              }
-              
-              return (
-                <span
-                  key={globalIndex} 
-                  className={className}
-                  ref={globalIndex === currentCharIndex ? currentCharRef : null}
-                >
-                  {char}
-                </span>
-              );
-            })}
+            {paragraph.split(/(\s+)/).map((word, wIndex) => (
+              <span key={wIndex} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+                {word.split('').map((char, cIndex) => {
+                  const charsBeforeInParagraph = paragraph
+                    .split(/(\s+)/)
+                    .slice(0, wIndex)
+                    .join('')
+                    .length;
+                  
+                  const globalIndex = pIndex === 0
+                    ? charsBeforeInParagraph + cIndex
+                    : paragraphs.slice(0, pIndex).join('').length + charsBeforeInParagraph + cIndex + (pIndex * 2);
+                  
+                  let className = "typing-char ";
+                  
+                  if (globalIndex < currentCharIndex) {
+                    className += completedChars[globalIndex] ? "correct" : "incorrect";
+                  } else if (globalIndex === currentCharIndex) {
+                    className += "current";
+                  } else {
+                    className += "upcoming";
+                  }
+                  
+                  return (
+                    <span
+                      key={globalIndex}
+                      className={className}
+                      ref={globalIndex === currentCharIndex ? currentCharRef : null}
+                    >
+                      {char}
+                    </span>
+                  );
+                })}
+              </span>
+            ))}
           </p>
         ))}
         
@@ -221,6 +232,11 @@ export default function TypeWriter({ article }: TypeWriterProps) {
           <div>
             <span className="font-semibold">Accuracy: </span>
             {accuracy}%
+          </div>
+          <div>
+            <span className="font-semibold">Difficulty: </span>
+            {Array(article.difficulty).fill('★').join('')}
+            {Array(5 - article.difficulty).fill('☆').join('')}
           </div>
         </div>
         
