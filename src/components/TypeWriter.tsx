@@ -103,10 +103,11 @@ export default function TypeWriter({ article }: TypeWriterProps) {
     const timeElapsed = Date.now() - (startTime || Date.now());
     setWpm(calculateWpm(timeElapsed, charsTyped));
     
-    // Calculate accuracy based on completed characters
-    const correctChars = completedChars.filter(Boolean).length;
-    const totalCompleted = completedChars.filter(char => char !== null).length;
-    setAccuracy(totalCompleted > 0 ? Math.round((correctChars / totalCompleted) * 100) : 100);
+    // Calculate accuracy based only on characters typed so far
+    const typedChars = completedChars.slice(0, currentCharIndex);
+    const correctChars = typedChars.filter(Boolean).length;
+    const totalTyped = typedChars.length;
+    setAccuracy(totalTyped > 0 ? Math.round((correctChars / totalTyped) * 100) : 100);
   };
 
   // Handle keyboard events for backspace
