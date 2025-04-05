@@ -109,6 +109,19 @@ export default function TypeWriter({ article }: TypeWriterProps) {
     setAccuracy(totalCompleted > 0 ? Math.round((correctChars / totalCompleted) * 100) : 100);
   };
 
+  // Handle keyboard events for backspace
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && currentCharIndex > 0) {
+      e.preventDefault();
+      // Move back one character
+      setCurrentCharIndex(prev => prev - 1);
+      // Reset the completed status of the previous character
+      const newCompletedChars = [...completedChars];
+      newCompletedChars[currentCharIndex - 1] = false;
+      setCompletedChars(newCompletedChars);
+    }
+  };
+
   // Focus the input field when component mounts
   useEffect(() => {
     if (inputRef.current) {
@@ -182,6 +195,7 @@ export default function TypeWriter({ article }: TypeWriterProps) {
           className="opacity-0 absolute pointer-events-none"
           value={userInput}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           disabled={isComplete}
         />
       </div>
