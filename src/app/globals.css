@@ -3,44 +3,49 @@
   src: url('/fonts/db-pixel.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'Zodiak';
+  src: url('/fonts/Zodiak-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Zodiak';
+  src: url('/fonts/Zodiak-Bold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@import '../styles/theme/colors.css';
+@import '../styles/components/type-writer.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --foreground-rgb: 255, 255, 255;
-  --background-rgb: 10, 10, 10;
-  --article-bg: 20, 20, 20;
-  --correct-color: 255, 255, 255;
-  --incorrect-color: 255, 50, 50;
-  --current-color: 255, 255, 255;
-  --upcoming-color: 100, 100, 100;
-  --cursor-color: 255, 255, 255;
-  --button-color: 200, 200, 200;
-}
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
   font-family: 'db-pixel', 'Roboto Mono', monospace;
+  padding-bottom: 5rem;
 }
 
 .typing-container {
   border-radius: 0.5rem;
-  min-height: 300px;
   position: relative;
   cursor: text;
   font-size: 1.6rem;
   line-height: 1.75;
   width: 100%;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: 'Zodiak', serif;
   word-break: keep-all;
   hyphens: none;
   overflow-wrap: break-word;
 }
 
 .article-source, .article-counter {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: 'Zodiak', serif;
 }
 
 .article-title {

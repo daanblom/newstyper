@@ -64,28 +64,31 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background py-8 flex flex-col justify-center">
-      <div className="w-full max-w-3xl px-4 mx-auto">
+    <main className="min-h-screen bg-background pt-24 pb-8 flex flex-col">
+      <div className="w-full max-w-3xl px-4 mx-auto flex-grow">
         <TypeWriter article={currentArticle} />
       </div>
       
-      <div className="w-full max-w-3xl px-4 mx-auto mt-8">
-        <div className="flex justify-center items-center gap-4">
-          <button 
-            onClick={handlePrevArticle}
-            className="custom-button"
-          >
-            Previous
-          </button>
-          <span className="text-gray-600 article-counter">
-            Article {currentArticleIndex + 1} of {articles.length}
-          </span>
-          <button 
-            onClick={handleNextArticle}
-            className="custom-button"
-          >
-            Next
-          </button>
+      {/* Fixed navigation at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background py-4">
+        <div className="w-full max-w-3xl px-4 mx-auto">
+          <div className="flex justify-center items-center gap-4">
+            <button 
+              onClick={handlePrevArticle}
+              className="custom-button"
+            >
+              Previous
+            </button>
+            <span className="text-gray-600 article-counter">
+              Article {currentArticleIndex + 1} of {articles.length}
+            </span>
+            <button 
+              onClick={handleNextArticle}
+              className="custom-button"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </main>

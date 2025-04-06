@@ -1,0 +1,61 @@
+.typing-container {
+  border-radius: 0.5rem;
+  position: relative;
+  cursor: text;
+  font-size: 1.6rem;
+  line-height: 1.75;
+  width: 100%;
+  font-family: 'Zodiak', serif;
+  word-break: keep-all;
+  hyphens: none;
+  overflow-wrap: break-word;
+}
+
+.article-source, .article-counter {
+  font-family: 'Zodiak', serif;
+}
+
+.article-title {
+  font-family: 'db-pixel', monospace;
+}
+
+.typing-char {
+  display: inline-block;
+  position: relative;
+  transition: color 0.1s ease;
+}
+
+.typing-char.correct {
+  color: rgb(var(--correct-color));
+}
+
+.typing-char.incorrect {
+  color: rgb(var(--incorrect-color));
+}
+
+.typing-char.current {
+  color: rgb(var(--current-color));
+  background-color: rgba(var(--current-color), 0.2);
+  border-radius: 2px;
+}
+
+.typing-char.upcoming {
+  color: rgb(var(--upcoming-color));
+}
+
+.typing-cursor {
+  position: absolute;
+  width: 2px;
+  height: 1.2em;
+  background-color: rgb(var(--cursor-color));
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+} 

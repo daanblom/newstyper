@@ -1,0 +1,11 @@
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 10, 10, 10;
+  --article-bg: 20, 20, 20;
+  --correct-color: 255, 255, 255;
+  --incorrect-color: 255, 50, 50;
+  --current-color: 255, 255, 255;
+  --upcoming-color: 100, 100, 100;
+  --cursor-color: 255, 255, 255;
+  --button-color: 200, 200, 200;
+} 
