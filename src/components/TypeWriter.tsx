@@ -216,8 +216,8 @@ export default function TypeWriter({ article }: TypeWriterProps) {
 
   return (
     <div>
-      <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold mb-2 article-title">{article.title}</h1>
+      <div className="pb-6">
+        <h1 className="text-2xl font-bold mb-2 article-source">{article.title}</h1>
         <p className="text-gray-600 article-source">Source: {article.source}</p>
       </div>
 

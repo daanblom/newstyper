@@ -8,29 +8,15 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
-  --article-bg: 240, 240, 240;
-  --correct-color: 0, 128, 0;
-  --incorrect-color: 255, 0, 0;
-  --current-color: 0, 0, 0;
-  --upcoming-color: 150, 150, 150;
-  --cursor-color: 0, 0, 0;
-  --button-color: 100, 100, 100;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-rgb: 30, 30, 30;
-    --article-bg: 40, 40, 40;
-    --correct-color: 0, 200, 0;
-    --incorrect-color: 255, 50, 50;
-    --current-color: 255, 255, 255;
-    --upcoming-color: 100, 100, 100;
-    --cursor-color: 255, 255, 255;
-    --button-color: 200, 200, 200;
-  }
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 10, 10, 10;
+  --article-bg: 20, 20, 20;
+  --correct-color: 255, 255, 255;
+  --incorrect-color: 255, 50, 50;
+  --current-color: 255, 255, 255;
+  --upcoming-color: 100, 100, 100;
+  --cursor-color: 255, 255, 255;
+  --button-color: 200, 200, 200;
 }
 
 body {
@@ -40,15 +26,12 @@ body {
 }
 
 .typing-container {
-  background-color: rgb(var(--article-bg));
   border-radius: 0.5rem;
-  padding: 1.5rem;
   min-height: 300px;
   position: relative;
   cursor: text;
-  font-size: 1.25rem;
+  font-size: 1.6rem;
   line-height: 1.75;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   font-family: Georgia, 'Times New Roman', serif;
   word-break: keep-all;

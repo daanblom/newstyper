@@ -64,9 +64,8 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background py-8 flex flex-col justify-between">
+    <main className="min-h-screen bg-background py-8 flex flex-col justify-center">
       <div className="w-full max-w-3xl px-4 mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8">News Typing Practice</h1>
         <TypeWriter article={currentArticle} />
       </div>
       
