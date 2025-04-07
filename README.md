@@ -11,11 +11,6 @@ A modern web application that combines touch typing practice with news reading. 
 - TypeScript support for better development experience
 - Elegant dark theme design for reduced eye strain
 - PostgreSQL database for article storage and management
-- Animated typing character with Rive animations
-- Combo counter and typing streak tracking
-- Error state visualization
-- Custom Zodiak font integration
-- Fixed navigation for better UX
 
 ## Tech Stack
 
@@ -24,8 +19,6 @@ A modern web application that combines touch typing practice with news reading. 
   - React 19
   - Tailwind CSS
   - TypeScript
-  - Rive Animations
-  - Custom Fonts (Zodiak)
 
 - **Backend:**
   - PostgreSQL database
@@ -46,8 +39,6 @@ The application features a carefully crafted dark theme designed for optimal rea
 - High contrast white text for better visibility
 - Red highlighting for incorrect typing
 - Clean, minimalist button design with hover effects
-- Animated character feedback for typing states
-- Custom Zodiak font for improved readability
 
 ## Getting Started
 
@@ -95,16 +86,9 @@ The application features a carefully crafted dark theme designed for optimal rea
 - `/src` - Source code
   - `/app` - Next.js app router and API routes
   - `/components` - React components
-    - `/type-writer` - Typing interface components
-    - `/animated-character` - Rive animation components
-  - `/styles` - CSS styles
-    - `/theme` - Theme variables and colors
-    - `/components` - Component-specific styles
   - `/data` - Data models and database schemas
   - `/types` - TypeScript type definitions
 - `/public` - Static assets
-  - `/fonts` - Custom fonts
-  - `/animations` - Rive animation files
 - `/docs` - Project documentation
 - `/prisma` - Database schema and migrations
 

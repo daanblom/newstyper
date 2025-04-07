@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:start": "pg_ctl -D .postgres/data -l .postgres/logfile start",
+    "db:start": "[ ! -d /run/postgresql ] && sudo mkdir -p /run/postgresql && sudo chown -R $USER:$USER /run/postgresql; pg_ctl -D .postgres/data -l .postgres/logfile start",
     "db:stop": "pg_ctl -D .postgres/data stop",
     "db:status": "pg_ctl -D .postgres/data status",
     "prisma:studio": "prisma studio",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@prisma/client": "^6.5.0",
     "@rive-app/react-canvas": "^4.18.6",
+    "@rive-app/react-webgl2": "^4.18.6",
     "next": "15.2.4",
     "prisma": "^6.5.0",
     "react": "^19.0.0",
