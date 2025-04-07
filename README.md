@@ -125,22 +125,27 @@ The application features a carefully crafted dark theme designed for optimal rea
 
 ## Project Structure
 
-- `/src` - Source code
-  - `/app` - Next.js app router and API routes
-  - `/components` - React components
-    - `/animated-character` - Rive animation components
-    - `/type-writer` - Typing interface components
-  - `/data` - Data models and database schemas
-  - `/types` - TypeScript type definitions
-  - `/styles` - CSS and styling
-    - `/theme` - Theme configuration
-    - `/components` - Component-specific styles
-- `/public` - Static assets
-  - `/animations` - Rive animation files
-  - `/fonts` - Custom font files
-- `/docs` - Project documentation
-- `/prisma` - Database schema and migrations
-  - `/scripts` - Database seeding and maintenance scripts
+```
+/src                  # Source code
+├── /app              # Next.js app router and API routes
+├── /components       # React components
+│   ├── /animated-character  # Rive animation components
+│   └── /type-writer        # Typing interface components
+├── /data             # Data models and database schemas
+├── /types            # TypeScript type definitions
+└── /styles           # CSS and styling
+    ├── /theme        # Theme configuration
+    └── /components   # Component-specific styles
+
+/public               # Static assets
+├── /animations       # Rive animation files
+└── /fonts           # Custom font files
+
+/docs                 # Project documentation
+
+/prisma               # Database schema and migrations
+└── /scripts         # Database seeding and maintenance scripts
+```
 
 ## Development
 
