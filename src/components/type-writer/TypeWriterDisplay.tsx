@@ -1,5 +1,3 @@
-import { useRef } from 'react';
-
 interface TypeWriterDisplayProps {
   paragraphs: string[];
   currentCharIndex: number;

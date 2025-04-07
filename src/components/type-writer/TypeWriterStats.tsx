@@ -48,7 +48,7 @@ export default function TypeWriterStats({
       
       {isComplete && (
         <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg">
-          <p className="text-center font-bold">Congratulations! You've completed this article.</p>
+          <p className="text-center font-bold">Congratulations! You&apos;ve completed this article.</p>
           <p className="text-center">Your final score: {wpm} WPM with {accuracy}% accuracy</p>
         </div>
       )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRive, Layout, Fit, Alignment, useStateMachineInput } from '@rive-app/react-canvas';
+import { useRive, Layout, Fit, Alignment, useStateMachineInput } from '@rive-app/react-webgl2';
 import { useEffect, useState } from 'react';
 
 interface AnimatedCharacterProps {
@@ -23,6 +23,7 @@ export default function AnimatedCharacter({
     src: animationFile,
     stateMachines: 'StateMachine',
     autoplay: true,
+    useOffscreenRenderer: true,
     layout: new Layout({
       fit: Fit.Cover,
       alignment: Alignment.Center,
