@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import AnimatedCharacter from './animated-character/AnimatedCharacter';
 
 interface Article {
@@ -37,28 +37,9 @@ export default function TypeWriter({ article }: TypeWriterProps) {
   const text = paragraphs.join('\n\n');
   
   // First split into words (preserving spaces), then into characters
-  const words = text.split(/(\s+)/); // This preserves whitespace as separate elements
   const chars = text.split('');
 
-  // Initialize completed characters array
-  useEffect(() => {
-    resetTyping();
-  }, [article]);
-
-  // Update cursor position when current character changes
-  useEffect(() => {
-    if (currentCharRef.current && articleRef.current) {
-      const charRect = currentCharRef.current.getBoundingClientRect();
-      const articleRect = articleRef.current.getBoundingClientRect();
-      
-      setCursorPosition({
-        x: charRect.left - articleRect.left,
-        y: charRect.top - articleRect.top
-      });
-    }
-  }, [currentCharIndex]);
-
-  const resetTyping = () => {
+  const resetTyping = useCallback(() => {
     setUserInput('');
     setStartTime(null);
     setWpm(0);
@@ -72,7 +53,25 @@ export default function TypeWriter({ article }: TypeWriterProps) {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  };
+  }, [chars.length]);
+
+  // Initialize completed characters array
+  useEffect(() => {
+    resetTyping();
+  }, [article, resetTyping]);
+
+  // Update cursor position when current character changes
+  useEffect(() => {
+    if (currentCharRef.current && articleRef.current) {
+      const charRect = currentCharRef.current.getBoundingClientRect();
+      const articleRect = articleRef.current.getBoundingClientRect();
+      
+      setCursorPosition({
+        x: charRect.left - articleRect.left,
+        y: charRect.top - articleRect.top
+      });
+    }
+  }, [currentCharIndex]);
 
   const calculateWpm = (timeElapsed: number, charsTyped: number) => {
     const minutes = timeElapsed / 60000;
@@ -180,7 +179,7 @@ export default function TypeWriter({ article }: TypeWriterProps) {
   }, []);
 
   // Handle clicks on the article to focus the input
-  const handleArticleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleArticleClick = () => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -249,7 +248,8 @@ export default function TypeWriter({ article }: TypeWriterProps) {
         <input
           ref={inputRef}
           type="text"
-          className="opacity-0 absolute pointer-events-none"
+          className="sr-only"
+          aria-label="Type the text"
           value={userInput}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
@@ -260,10 +260,10 @@ export default function TypeWriter({ article }: TypeWriterProps) {
   };
 
   return (
-    <div>
+    <div className="relative">
       {/* Title and source */}
       <div className="pb-6">
-        <h1 className="text-2xl text-red-500 mb-2 article-source">{article.title}</h1>
+        <h1 className="text-6xl mb-2 article-source">{article.title}</h1>
         <p className="text-gray-600 article-source">Source: {article.source}</p>
       </div>
 
@@ -310,7 +310,7 @@ export default function TypeWriter({ article }: TypeWriterProps) {
       
       {isComplete && (
         <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg">
-          <p className="text-center font-bold">Congratulations! You've completed this article.</p>
+          <p className="text-center font-bold">Congratulations! You&apos;ve completed this article.</p>
           <p className="text-center">Your final score: {wpm} WPM with {accuracy}% accuracy</p>
         </div>
       )}
