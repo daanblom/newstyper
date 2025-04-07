@@ -32,6 +32,7 @@ body {
 }
 
 .typing-container {
+  padding-top: 1rem;
   border-radius: 0.5rem;
   position: relative;
   cursor: text;
