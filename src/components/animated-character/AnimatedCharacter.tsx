@@ -7,7 +7,8 @@ interface AnimatedCharacterProps {
   // Animation states
   isTyping: boolean;
   hasError: boolean;
-  comboCount: number;
+  typingSpeed: number; // WPM (words per minute)
+  isSleeping: boolean; // Whether the character is sleeping
   // Animation file path
   animationFile: string;
 }
@@ -15,7 +16,8 @@ interface AnimatedCharacterProps {
 export default function AnimatedCharacter({
   isTyping,
   hasError,
-  comboCount,
+  typingSpeed,
+  isSleeping,
   animationFile,
 }: AnimatedCharacterProps) {
   const [currentState, setCurrentState] = useState<string>('idle');
@@ -37,14 +39,23 @@ export default function AnimatedCharacter({
     // Handle different states based on props
     if (hasError) {
       setCurrentState('error');
-    } else if (comboCount >= 5) {
-      setCurrentState('excited');
-    } else if (isTyping) {
-      setCurrentState('typing');
-    } else {
+    } else if (isSleeping) {
+      setCurrentState('sleeping');
+    } else if (!isTyping) {
       setCurrentState('idle');
+    } else {
+      // Determine typing speed state
+      if (typingSpeed <= 20) {
+        setCurrentState('speed1');
+      } else if (typingSpeed <= 40) {
+        setCurrentState('speed2');
+      } else if (typingSpeed <= 60) {
+        setCurrentState('speed3');
+      } else {
+        setCurrentState('speed4');
+      }
     }
-  }, [isTyping, hasError, comboCount]);
+  }, [isTyping, hasError, typingSpeed, isSleeping]);
 
   useEffect(() => {
     if (!stateInput) {
@@ -52,15 +63,20 @@ export default function AnimatedCharacter({
       return;
     }
 
-    // Map states to numeric values
+    // Map states to numeric values according to rive_states.md
     const stateMap: Record<string, number> = {
-      'idle': 0,
-      'typing': 1,
-      'error': 2,
-      'excited': 3
+      'sleeping': 0,
+      'idle': 1,
+      'speed1': 2,
+      'speed2': 3,
+      'speed3': 4,
+      'speed4': 5,
+      'error': 6
     };
-    const numericValue = stateMap[currentState] || 0;
-
+    
+    // Get the numeric value for the current state
+    const numericValue = stateMap[currentState] ?? 1; // Default to idle (1) if state not found
+    
     try {
       // Set the state value using the hook-provided input
       stateInput.value = numericValue;

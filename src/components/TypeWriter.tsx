@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import AnimatedCharacter from './animated-character/AnimatedCharacter';
+import TypeWriterStats from './type-writer/TypeWriterStats';
+import TypeWriterDisplay from './type-writer/TypeWriterDisplay';
 
 interface Article {
   title: string;
@@ -26,11 +28,16 @@ export default function TypeWriter({ article }: TypeWriterProps) {
   const [comboCount, setComboCount] = useState(0);
   const [hasError, setHasError] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0); // Time in milliseconds
+  const [typingSpeed, setTypingSpeed] = useState(0); // Current typing speed in WPM
+  const [isSleeping, setIsSleeping] = useState(false); // Track if character is sleeping
   const articleRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const currentCharRef = useRef<HTMLSpanElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const errorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Split article content into paragraphs, then words, then characters
   const paragraphs = article.content.split(/\n+/).filter(p => p.trim().length > 0);
@@ -50,6 +57,21 @@ export default function TypeWriter({ article }: TypeWriterProps) {
     setComboCount(0);
     setHasError(false);
     setIsTyping(false);
+    setElapsedTime(0);
+    setTypingSpeed(0);
+    setIsSleeping(false);
+    
+    // Clear any existing timers
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    
+    if (idleTimerRef.current) {
+      clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = null;
+    }
+    
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -73,6 +95,54 @@ export default function TypeWriter({ article }: TypeWriterProps) {
     }
   }, [currentCharIndex]);
 
+  // Timer effect to update elapsed time
+  useEffect(() => {
+    if (startTime && !isComplete) {
+      // Update more frequently (every 10ms) for more precise timing
+      timerRef.current = setInterval(() => {
+        const now = Date.now();
+        const timeElapsed = now - startTime;
+        setElapsedTime(timeElapsed); // Keep in milliseconds
+        
+        // Update WPM in real-time
+        const charsTyped = completedChars.filter(Boolean).length;
+        setWpm(calculateWpm(timeElapsed, charsTyped));
+        setTypingSpeed(calculateWpm(timeElapsed, charsTyped));
+      }, 10); // Update every 10ms for smoother display
+    }
+    
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [startTime, isComplete, completedChars]);
+
+  // Idle timer effect to transition to sleeping state after 10 seconds of inactivity
+  useEffect(() => {
+    // Clear any existing idle timer
+    if (idleTimerRef.current) {
+      clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = null;
+    }
+
+    // Only start the idle timer if not typing, not in error state, and not complete
+    if (!isTyping && !hasError && !isComplete) {
+      idleTimerRef.current = setTimeout(() => {
+        setIsSleeping(true);
+      }, 10000); // 10 seconds of inactivity
+    } else {
+      // If typing or in error state, make sure we're not sleeping
+      setIsSleeping(false);
+    }
+
+    return () => {
+      if (idleTimerRef.current) {
+        clearTimeout(idleTimerRef.current);
+      }
+    };
+  }, [isTyping, hasError, isComplete]);
+
   const calculateWpm = (timeElapsed: number, charsTyped: number) => {
     const minutes = timeElapsed / 60000;
     // Assuming 5 characters per word on average
@@ -84,6 +154,7 @@ export default function TypeWriter({ article }: TypeWriterProps) {
     const input = e.target.value;
     setUserInput(input);
     setIsTyping(true);
+    setIsSleeping(false); // Wake up from sleeping state when typing
 
     // Clear the previous typing timeout
     if (typingTimeoutRef.current) {
@@ -130,7 +201,7 @@ export default function TypeWriter({ article }: TypeWriterProps) {
         errorTimeoutRef.current = setTimeout(() => {
           setHasError(false);
           setIsTyping(false);
-        }, 500); // Transition back to idle after 1 second of no typing
+        }, 10); // Transition back to idle after 0.1 second of no typing
       }
 
       // Move to the next character
@@ -138,6 +209,11 @@ export default function TypeWriter({ article }: TypeWriterProps) {
         const nextIndex = prev + 1;
         if (nextIndex >= chars.length) {
           setIsComplete(true);
+          // Clear the timer when typing is complete
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+          }
         }
         return nextIndex;
       });
@@ -146,11 +222,6 @@ export default function TypeWriter({ article }: TypeWriterProps) {
       setUserInput('');
     }
 
-    // Calculate WPM and accuracy
-    const charsTyped = completedChars.filter(Boolean).length;
-    const timeElapsed = Date.now() - (startTime || Date.now());
-    setWpm(calculateWpm(timeElapsed, charsTyped));
-    
     // Calculate accuracy based only on characters typed so far
     const typedChars = completedChars.slice(0, currentCharIndex);
     const correctChars = typedChars.filter(Boolean).length;
@@ -185,80 +256,6 @@ export default function TypeWriter({ article }: TypeWriterProps) {
     }
   };
 
-  // Render the article text with highlighting
-  const renderArticleText = () => {
-    return (
-      <div 
-        ref={articleRef}
-        className="typing-container"
-        onClick={handleArticleClick}
-      >
-        {paragraphs.map((paragraph, pIndex) => (
-          <p key={pIndex} className="mb-4 whitespace-pre-wrap">
-            {paragraph.split(/(\s+)/).map((word, wIndex) => (
-              <span key={wIndex} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
-                {word.split('').map((char, cIndex) => {
-                  const charsBeforeInParagraph = paragraph
-                    .split(/(\s+)/)
-                    .slice(0, wIndex)
-                    .join('')
-                    .length;
-                  
-                  const globalIndex = pIndex === 0
-                    ? charsBeforeInParagraph + cIndex
-                    : paragraphs.slice(0, pIndex).join('').length + charsBeforeInParagraph + cIndex + (pIndex * 2);
-                  
-                  let className = "typing-char ";
-                  
-                  if (globalIndex < currentCharIndex) {
-                    className += completedChars[globalIndex] ? "correct" : "incorrect";
-                  } else if (globalIndex === currentCharIndex) {
-                    className += "current";
-                  } else {
-                    className += "upcoming";
-                  }
-                  
-                  return (
-                    <span
-                      key={globalIndex}
-                      className={className}
-                      ref={globalIndex === currentCharIndex ? currentCharRef : null}
-                    >
-                      {char}
-                    </span>
-                  );
-                })}
-              </span>
-            ))}
-          </p>
-        ))}
-        
-        {/* Visual cursor */}
-        {!isComplete && (
-          <div
-            className="typing-cursor"
-            style={{
-              left: `${cursorPosition.x}px`,
-              top: `${cursorPosition.y}px`
-            }}
-          />
-        )}
-        
-        {/* Hidden input for capturing keyboard events */}
-        <input
-          ref={inputRef}
-          type="text"
-          className="sr-only"
-          aria-label="Type the text"
-          value={userInput}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          disabled={isComplete}
-        />
-      </div>
-    );
-  };
-
   return (
     <div className="relative">
       {/* Title and source */}
@@ -268,52 +265,48 @@ export default function TypeWriter({ article }: TypeWriterProps) {
       </div>
 
       {/* Article text */}
-      {renderArticleText()}
+      <TypeWriterDisplay
+        paragraphs={paragraphs}
+        currentCharIndex={currentCharIndex}
+        completedChars={completedChars}
+        onArticleClick={handleArticleClick}
+        currentCharRef={currentCharRef}
+        articleRef={articleRef}
+        cursorPosition={cursorPosition}
+        isComplete={isComplete}
+      />
+      
+      {/* Hidden input for capturing keyboard events */}
+      <input
+        ref={inputRef}
+        type="text"
+        className="sr-only"
+        aria-label="Type the text"
+        value={userInput}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        disabled={isComplete}
+      />
 
       {/* Animated character */}
       <AnimatedCharacter
         isTyping={isTyping}
         hasError={hasError}
-        comboCount={comboCount}
+        typingSpeed={typingSpeed}
+        isSleeping={isSleeping}
         animationFile="/animations/typing-character.riv"
       />
 
       {/* Stats and controls */}
-      <div className="flex justify-between items-center mt-6">
-        <div className="flex gap-6 text-lg">
-          <div>
-            <span className="font-semibold">WPM: </span>
-            {wpm}
-          </div>
-          <div>
-            <span className="font-semibold">Accuracy: </span>
-            {accuracy}%
-          </div>
-          <div>
-            <span className="font-semibold">Difficulty: </span>
-            {Array(article.difficulty).fill('★').join('')}
-            {Array(5 - article.difficulty).fill('☆').join('')}
-          </div>
-          <div>
-            <span className="font-semibold">Combo: </span>
-            {comboCount}
-          </div>
-        </div>
-        
-        <button
-          onClick={resetTyping}
-          className="custom-button"
-        >
-          {isComplete ? "Try Again" : "Reset"}
-        </button>
-      </div>
-      
-      {isComplete && (
-        <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg">
-          <p className="text-center font-bold">Congratulations! You&apos;ve completed this article.</p>
-          <p className="text-center">Your final score: {wpm} WPM with {accuracy}% accuracy</p>
-        </div>
-      )}
+      <TypeWriterStats
+        wpm={wpm}
+        accuracy={accuracy}
+        difficulty={article.difficulty}
+        elapsedTime={elapsedTime}
+        comboCount={comboCount}
+        onReset={resetTyping}
+        isComplete={isComplete}
+      />
     </div>
   );
 } 
