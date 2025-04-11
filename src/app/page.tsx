@@ -5,44 +5,40 @@ import TypeWriter from '@/components/TypeWriter';
 import { Article } from '@/types/article';
 
 export default function Home() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [currentArticleIndex, setCurrentArticleIndex] = useState(0);
+  const [currentArticle, setCurrentArticle] = useState<Article | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch('/api/articles');
-        if (!response.ok) {
-          throw new Error('Failed to fetch articles');
-        }
-        const data = await response.json();
-        setArticles(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setIsLoading(false);
+  const fetchArticle = async (id?: string) => {
+    try {
+      setIsLoading(true);
+      const url = id ? `/api/articles?id=${id}` : '/api/articles';
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch article');
       }
-    };
-
-    fetchArticles();
-  }, []);
-
-  const currentArticle = articles[currentArticleIndex];
-
-  const handleNextArticle = () => {
-    setCurrentArticleIndex((prevIndex) => (prevIndex + 1) % articles.length);
+      const data = await response.json();
+      setCurrentArticle(data);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handlePrevArticle = () => {
-    setCurrentArticleIndex((prevIndex) => (prevIndex - 1 + articles.length) % articles.length);
+  useEffect(() => {
+    fetchArticle();
+  }, []);
+
+  const handleNextArticle = () => {
+    fetchArticle();
   };
 
   if (isLoading) {
     return (
       <main className="min-h-screen bg-background py-8 flex items-center justify-center">
-        <div className="text-xl">Loading articles...</div>
+        <div className="text-xl">Loading article...</div>
       </main>
     );
   }
@@ -55,7 +51,7 @@ export default function Home() {
     );
   }
 
-  if (articles.length === 0) {
+  if (!currentArticle) {
     return (
       <main className="min-h-screen bg-background py-8 flex items-center justify-center">
         <div className="text-xl">No articles available.</div>
@@ -74,19 +70,10 @@ export default function Home() {
         <div className="w-full max-w-3xl px-4 mx-auto">
           <div className="flex justify-center items-center gap-4">
             <button 
-              onClick={handlePrevArticle}
-              className="custom-button"
-            >
-              Previous
-            </button>
-            <span className="text-gray-600 article-counter">
-              Article {currentArticleIndex + 1} of {articles.length}
-            </span>
-            <button 
               onClick={handleNextArticle}
               className="custom-button"
             >
-              Next
+              Next Article
             </button>
           </div>
         </div>
