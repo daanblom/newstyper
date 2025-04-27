@@ -101,27 +101,49 @@ The application features a carefully crafted dark theme designed for optimal rea
 2. Install dependencies:
    ```bash
    npm install
-   # or
-   yarn install
    ```
 
-3. Set up the database:
+3. Set up PostgreSQL:
    ```bash
-   # Create a .env file with your database credentials
-   DATABASE_URL="postgresql://username:password@localhost:5432/newstyper"
-   
-   # Run database migrations
-   npx prisma migrate dev
+   # Create PostgreSQL data directory and initialize it
+   mkdir -p .postgres/data
+   initdb -D .postgres/data
+
+   # Start the PostgreSQL server
+   npm run db:start
+
+   # Create the database
+   createdb newstyper
    ```
 
-4. Start the development server:
+4. Configure the environment:
+   ```bash
+   # Create a .env file with the database URL
+   # Replace 'your_username' with your system username
+   echo 'DATABASE_URL="postgresql://your_username@localhost:5432/newstyper?schema=public"' > .env
+   ```
+
+5. Set up the database schema and seed data:
+   ```bash
+   # Run database migrations
+   npm run prisma:migrate
+
+   # Seed the database with sample articles
+   npm run prisma:seed
+   ```
+
+6. Start the development server:
    ```bash
    npm run dev
-   # or
-   yarn dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+7. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+
+### Additional Commands
+
+- `npm run db:status` - Check PostgreSQL server status
+- `npm run db:stop` - Stop PostgreSQL server
+- `npm run prisma:studio` - Open Prisma Studio to manage database content
 
 ## Project Structure
 
